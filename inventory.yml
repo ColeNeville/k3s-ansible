@@ -1,0 +1,26 @@
+k3s_cluster:
+  children:
+    server:
+      hosts:
+        alexander-4.local.coleslab.com:
+          vars:
+            extra_server_args: "--disable=servicelb --disable-agent --cluster-init"
+    agent:
+      hosts:
+        alexander-1.local.coleslab.com: {}
+        alexander-2.local.coleslab.com: {}
+        alexander-3.local.coleslab.com: {}
+  vars:
+    ansible_user: cole
+    k3s_version: v1.26.9+k3s1
+    token: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      62663366623865636234386637626361323733316335383432663736656230333735656362616666
+      3163633365616238376638323966646165376665613037320a363232373233636331323037313236
+      65303161653130623930323865313964306139626433363830313732633436386466346437656533
+      3862633331623737300a383034323832643039353464323433323135376538623438333637306262
+      63313663346434366462316361336466653866636336333963373035343733623562386163353865
+      3139663733363832643936653364643039613361333561316566
+    api_endpoint: "{{ hostvars[groups['server'][0]]['ansible_host'] | default(groups['server'][0]) }}"
+    extra_server_args: "--disable=servicelb"
+    extra_agent_args: ""
